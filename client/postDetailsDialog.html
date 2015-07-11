@@ -1,5 +1,5 @@
 <template name="postDetailsDialog">
-    <div class="modal fade post-details-dialog" tabindex="-1" role="dialog" aria-labelledby="modal-title">
+    <div id='postDetailsDialog' class="modal fade" tabindex="-1" role="dialog" aria-labelledby="modal-title">
         <div class="modal-dialog" role="document">
             <div class="modal-content">
                 <div class="modal-header">
@@ -13,7 +13,7 @@
                                 <div class="form-group">
                                     <label for="title" class="control-label col-md-5">Title:</label>
                                     <div class="col-md-7">
-                                        <input type="text" class="form-control" name="title" value="{{title}}" />
+                                        <input type="text" class="form-control" name="title" value="{{title}}" autofocus />
                                     </div>
                                 </div>
 

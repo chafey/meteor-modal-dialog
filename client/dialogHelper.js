@@ -1,12 +1,27 @@
 dialogHelper = function(settings) {
 
+  // default the session key to the template name if not specified
+  if(!settings.sessionKey) {
+    settings.sessionKey = settings.template;
+  }
+
+  // default the dialogSelector to the template name as an id if not specified
+  if(!settings.dialogSelector) {
+    settings.dialogSelector = '#' + settings.template;
+  }
+
+  if(!settings.saveSelector) {
+    settings.saveSelector = '#save';
+  }
+
+
   // initialize the session to empty object so the template doesn't error out
   Session.set(settings.sessionKey, {});
 
   Template[settings.template].onRendered(function() {
     // Set the focus to the title every time the dialog is shown
     $(settings.dialogSelector).on('shown.bs.modal', function () {
-      $(settings.focusSelector).focus()
+      $('[autofocus]').focus()
     });
     // reset the dialog state every time the dialog is hidden
     $(settings.dialogSelector).on('hide.bs.modal', function () {
@@ -29,7 +44,7 @@ dialogHelper = function(settings) {
   // Add support for saving the data if saveSelector is defined
   if(settings.saveSelector) {
     var events = {};
-    events[settings.saveSelector] = function () {
+    events['click ' + settings.saveSelector] = function () {
       //console.log('saving');
 
       // Pull data from DOM into our data object based on the name attribute
@@ -65,13 +80,16 @@ dialogHelper = function(settings) {
         }
       }
 
-      // insert or update
-      if (data._id) {
-        var id = data._id;
-        delete data._id;
-        settings.collection.update(id, {$set: data});
-      } else {
-        settings.collection.insert(data);
+      // if collection is defined, update or insert the document
+      if(settings.collection) {
+        // insert or update
+        if (data._id) {
+          var id = data._id;
+          delete data._id;
+          settings.collection.update(id, {$set: data});
+        } else {
+          settings.collection.insert(data);
+        }
       }
 
       // hide the dialog
