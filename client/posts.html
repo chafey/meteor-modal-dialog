@@ -1,9 +1,22 @@
 <template name="posts">
-    <ul>
-    {{#each postsList}}
-        {{>post}}
-    {{/each}}
-    </ul>
+    <table class="table table-striped">
+        <thead>
+        <tr>
+            <th>_id</th>
+            <th>Title</th>
+            <th>Flagged</th>
+            <th>Priority</th>
+            <th>Color</th>
+            <th>Timestamp</th>
+            <th>Actions</th>
+        </tr>
+        </thead>
+        <tbody>
+        {{#each postsList}}
+            {{>post}}
+        {{/each}}
+        </tbody>
+    </table>
     <hr>
     <button id="add">Add</button>
     {{>postDetailsDialog}}

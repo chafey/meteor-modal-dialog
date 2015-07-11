@@ -16,7 +16,6 @@ Features
 TODO
 ====
 
-* add support or other input types (e.g. select, radio buttons, date picker, etc)
 * consider adding support for arrays or child objects
 * add support for reverse data bind to Numbers
 * add support for reverse data binding to Date types

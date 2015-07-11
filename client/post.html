@@ -1,3 +1,11 @@
 <template name="post">
-    <li>{{title}} | <a href="#">Edit</a></li>
+    <tr>
+        <td>{{_id}}</td>
+        <td>{{title}} </td>
+        <td>{{literalBoolean flagged}} </td>
+        <td>{{priority}} </td>
+        <td>{{color}}</td>
+        <td>{{timestamp}}</td>
+        <td><a href="#">Edit</a></td>
+    </tr>
 </template>

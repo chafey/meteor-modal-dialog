@@ -1,3 +1,4 @@
+
 dialogHelper = function(settings) {
 
   // default the session key to the template name if not specified
@@ -14,18 +15,23 @@ dialogHelper = function(settings) {
     settings.saveSelector = '#save';
   }
 
+  var templateInstance;
+
   // initialize the session to empty object so the template doesn't error out
   Session.set(settings.sessionKey, {});
 
   Template[settings.template].onRendered(function() {
+    templateInstance = this;
+
     // Set the focus to the title every time the dialog is shown
     $(settings.dialogSelector).on('shown.bs.modal', function () {
       $('[autofocus]').focus()
     });
     // reset the dialog state every time the dialog is hidden
     $(settings.dialogSelector).on('hide.bs.modal', function () {
-      console.log('hiding');
-      // Clear the session variable to reset the dialog data
+      //console.log('hiding');
+      // Clear the session variable to reset the dialog data.  Note that this blows away the
+      // dom elements for the dialog!
       Session.set(settings.sessionKey, undefined);
     })
   });
@@ -63,10 +69,24 @@ dialogHelper = function(settings) {
         data[name] = $(element).is(':checked');
         //console.log(name + ' = ' + data[name]);
       });
+      $('input[type=radio]').each(function (index, element) {
+        var name = $(element).attr('name');
+        if($(element).is(':checked') === true) {
+          data[name] = $(element).val();
+        }
+        //console.log(name + ' = ' + data[name]);
+      });
+      $('option').each(function (index, element) {
+        var name = $(element).parent().attr('name');
+        if($(element).is(':selected') === true) {
+          data[name] = $(element).val();
+        }
+        //console.log(name + ' = ' + data[name]);
+      });
 
       // if a setData was supplied, get it a chance to set data
       if(settings.setData) {
-        setData(data);
+        settings.setData(data);
       }
 
       //console.log(data);
@@ -105,8 +125,15 @@ dialogHelper = function(settings) {
 
   return {
     show: function(data) {
+      data = data || {};
+
       // Reset the dialog state
-      Session.set(settings.sessionKey, data || {});
+      Session.set(settings.sessionKey, data);
+
+      // invoke the onShowing callback so it can setup the template instance if necessary
+      if(settings.onShowing) {
+        settings.onShowing(templateInstance, data);
+      }
 
       // show dialog
       $(settings.dialogSelector).modal();
