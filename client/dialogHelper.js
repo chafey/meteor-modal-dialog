@@ -14,7 +14,6 @@ dialogHelper = function(settings) {
     settings.saveSelector = '#save';
   }
 
-
   // initialize the session to empty object so the template doesn't error out
   Session.set(settings.sessionKey, {});
 
@@ -80,15 +79,21 @@ dialogHelper = function(settings) {
         }
       }
 
-      // if collection is defined, update or insert the document
-      if(settings.collection) {
-        // insert or update
-        if (data._id) {
-          var id = data._id;
-          delete data._id;
-          settings.collection.update(id, {$set: data});
-        } else {
-          settings.collection.insert(data);
+      // if a save function is defined, use that to save
+      if(settings.save) {
+        if(settings.save(data) !== true) {
+          return;
+        }
+      } else {
+        // if collection is defined, update or insert the document to it
+        if (settings.collection) {
+          if (data._id) {
+            var id = data._id;
+            delete data._id;
+            settings.collection.update(id, {$set: data});
+          } else {
+            settings.collection.insert(data);
+          }
         }
       }
 
