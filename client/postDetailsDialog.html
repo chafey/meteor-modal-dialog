@@ -1,0 +1,44 @@
+<template name="postDetailsDialog">
+    <div class="modal fade post-details-dialog" tabindex="-1" role="dialog" aria-labelledby="modal-title">
+        <div class="modal-dialog" role="document">
+            <div class="modal-content">
+                <div class="modal-header">
+                    <button type="button" class="close" data-dismiss="modal" aria-label="Close"><span aria-hidden="true">&times;</span></button>
+                    <h3 class="modal-title inline-block">{{dialogMode}} Post</h3>
+                </div>
+                <div class="modal-body clearfix">
+                    <form class="form-horizontal">
+                        {{#with dialogData}}
+                            <div class="col-md-12">
+                                <div class="form-group">
+                                    <label for="title" class="control-label col-md-5">Title:</label>
+                                    <div class="col-md-7">
+                                        <input type="text" class="form-control" name="title" value="{{title}}" />
+                                    </div>
+                                </div>
+
+                                <div class="form-group">
+                                    <label for="notes" class="control-label col-md-5">Notes:</label>
+                                    <div class="col-md-7">
+                                        <textarea class="form-control js-add-notes" name="notes" rows="3">{{notes}}</textarea>
+                                    </div>
+                                </div>
+
+                                <div class="form-group">
+                                    <label for="flagged" class="control-label col-md-5">Flagged:</label>
+                                    <div class="col-md-7">
+                                        <input type="checkbox" class="form-control" {{flaggedIsChecked}} name="flagged"/>
+                                    </div>
+                                </div>
+                            </div>
+                        {{/with}}
+                    </form>
+                </div>
+                <br />
+                <div class="modal-footer">
+                    <button id='save' class="blue medium">Save</button>
+                </div>
+            </div>
+        </div>
+    </div>
+</template>

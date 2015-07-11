@@ -1,0 +1,10 @@
+<template name="posts">
+    <ul>
+    {{#each postsList}}
+        {{>post}}
+    {{/each}}
+    </ul>
+    <hr>
+    <button id="add">Add</button>
+    {{>postDetailsDialog}}
+</template>
