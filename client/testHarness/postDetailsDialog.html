@@ -1,5 +1,8 @@
 <template name="postDetailsDialog">
+    <!-- the id is assumed to be the same as the template name, this can be customized via the dialogSelector
+    property in the settings -->
     <div id='postDetailsDialog' class="modal fade" tabindex="-1" role="dialog" aria-labelledby="modalLabel">
+        <!-- the dialogHelper will expose the current data object via the dialogData helper -->
         {{#with dialogData}}
         <div class="modal-dialog" role="document">
             <div class="modal-content">
@@ -13,13 +16,16 @@
                                 <div class="form-group">
                                     <label for="title" class="control-label col-md-5">Title:</label>
                                     <div class="col-md-7">
-                                        <input type="text" class="form-control" name="title" value="{{title}}" autofocus />
+                                        <!-- use the name attribute to specify the property to map the value to -->
+                                        <!-- use the autofocus attribute to specify which field to autofocus -->
+                                        <input id="title" type="text" class="form-control" name="title" value="{{title}}" autofocus />
                                     </div>
                                 </div>
 
                                 <div class="form-group">
                                     <label for="notes" class="control-label col-md-5">Notes:</label>
                                     <div class="col-md-7">
+                                        <!-- use the name attribute to specify the property to map the value to -->
                                         <textarea class="form-control" name="notes" rows="3">{{notes}}</textarea>
                                     </div>
                                 </div>
@@ -27,6 +33,7 @@
                                 <div class="form-group">
                                     <label for="flagged" class="control-label col-md-5">Flagged:</label>
                                     <div class="col-md-7">
+                                        <!-- use the name attribute to specify the property to map the value to -->
                                         <input type="checkbox" class="form-control" {{checked flagged}} name="flagged"/>
                                     </div>
                                 </div>
@@ -43,9 +50,11 @@
                                     <label for="priority" class="control-label col-md-5">Priority:</label>
                                     <div class="col-md-7">
                                         <label class="radio-inline">
+                                            <!-- use the name attribute to specify the property to map the value to -->
                                             <input type="radio" name="priority" value="H" {{checkedIf priority 'H'}}> High
                                         </label>
                                         <label class="radio-inline">
+                                            <!-- use the name attribute to specify the property to map the value to -->
                                             <input type="radio" name="priority" value="N" {{checkedIf priority 'N'}}> Normal
                                         </label>
                                     </div>
@@ -54,6 +63,7 @@
                                 <div class="form-group">
                                     <label for='color' class="control-label col-md-5">Color:</label>
                                     <div class="col-md-7">
+                                        <!-- use the name attribute to specify the property to map the value to -->
                                         <select class="form-control" name="color">
                                             <option value="R" {{selectedIf color 'R'}}>Red</option>
                                             <option value="B" {{selectedIf color 'B'}}>Blue</option>
@@ -67,6 +77,8 @@
                 </div>
                 <br />
                 <div class="modal-footer">
+                    <!-- the button wit the id save is the default button to trigger saving.  This can be customized
+                     via the saveSelector property in the settings -->
                     <button id='save' class="btn btn-primary">Save</button>
                 </div>
             </div>

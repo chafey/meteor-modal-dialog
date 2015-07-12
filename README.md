@@ -1,23 +1,34 @@
 # meteor-modal-dialog
 
-This is an example of a dialogHelper() function that simplifies bootstrap 3 dialogs with meteor.
+This repository contains a prototype framework for dialog management in meteor and a sample test harness showing its
+use.  This will probably be broken out into a separate package once it matures.
 
 Features
 ========
 
-* two way data binding by specifying the target property name with name attributes
+* automatic mapping of data from DOM elements in a template to properties in an object
+    * The element must use the name attribute to describe which property to map the value into int the object
+* hook for customized initialization
+* hook for customized data mapping
 * hook for customized validation logic
-* hook for customized reverse data binding
 * hook for customized saving
 * automatic insert or update to a collection when saved
 * automatically sets the focus to the element with the autofocus attribute when the dialog is shown
-* template oriented naming conventions reduces configuration effort
+* template oriented naming conventions minimizes configuration effort
 
-TODO
-====
+Backlog
+=======
 
-* consider adding support for arrays or child objects
-* add support for reverse data bind to Numbers
-* add support for reverse data binding to Date types
-* consider adding support for automatic validation with SimpleSchema
-
+* consider adding support for arrays and child objects (NOTE: possible now via customized data mapping hook)
+* add support for mapping to Number types (NOTE: possible now via customized data mapping hook)
+* add support for mapping to Date types (NOTE: possible now via customized data mapping hook)
+* create a generic validator mechanism to integrate with third party packages (e.g. SimpleSchema)
+  (NOTE: possible now via customized validation logic hook)
+* create a generic mapping mechanism to integrate with third party packages (e.g. bootstrap datetime picker)
+  (NOTE: possible now via customized data mapping hook and customized initialization hook)
+* make the clearing of the dialog data optional
+* consider using the data property of the template instance rather than {{dialogData}
+  NOTE: this would impact the automated data clearing mechanism
+* revisit the data clearing mechanism - removing the dialog from the DOM seems hacky and may not be reliable.
+* consider replacing use of session with ReactiveVar
+* consider automatically showing dialogs that are currently shown during a hot code reload
