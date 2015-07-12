@@ -1,56 +1,56 @@
+/**
+ * This file demonstrates how to use the mini dialog framework.
+ */
 
-console.log(Template.postDetailsDialog);
+// Here we setup our options to handle customized data mapping and validation
+var options = {
 
-// To setup our dialog, simply call dialogHelper with an object providing the needed data
-postDetailsDialog = dialogHelper({
-  // the template containing the dialog
-  template: Template.postDetailsDialog,
+  // We use a customized data mapper to handle the datetimepicker since it exposes the
+  // Date via an API call which the automapper doesn't know about
+  map :function(template, data) {
+    data.timestamp = template.$('.datetimepicker').data("DateTimePicker").date().toDate();
+    return true;
+  },
 
-  // Function that can be hooked to do the actual save (e.g. via meteor methods instead of collection).
-  // Takes precedence over the collection property
-  // Returns: true on success, false on failure
-  //save :function(template, data) { return true},
-
-  // Validation function
-  // Returns: true on successful validation, false on validation failure
+  // We use a customized validation function to check to make sure the title is not empty
+  // if its, we indicate this to the user
   validate: function(template, data) {
     if(data.title.length ===0) {
       // focus the element and make it red
       template.$('#title').parent().addClass('has-error');
       template.$('#title').focus();
+      // return false to prevent saving of the data since validation failed
       return false;
     } else {
+      // data passed validation, remove the has-error class.
+      // NOTE: it would be better to use reactivity to control validation errors
       template.$('#title').parent().removeClass('has-error');
     }
 
     return true;
-  },
-
-  // Function that can do custom data mapping
-  map :function(template, data) {
-    data.timestamp = template.$('.datetimepicker').data("DateTimePicker").date().toDate();
-  },
-
-  // callback invoked before the dialog is shown so we can do custom initialization
-  initialize : function(template, data) {
-    //console.log('onShowing', templateInstance, data);
-    var defaultDate = data.timestamp || new Date();
-    template.$('.datetimepicker').datetimepicker({format : 'YYYY/MM/DD HH:mm:ss', defaultDate: defaultDate});
-  },
-
-  // The collection to save to via insert() or update().  Ignored if a save function is provided
-  collection: Posts,
-
-});
-
-Template.postDetailsDialog.helpers({
-  dialogMode: function () {
-    var data = Session.get('postDetailsDialog');
-    return (data && data._id) ? 'Edit' : "Add";
   }
-});
+};
 
+
+// baseDialog requires the template and a function that is called to save the dialog contents.  Optional
+// settings are passed via the optional third argument.  In this case, we use simpleUpset to upsert directly
+// to a collection - but we could pass another function which does the upsert via meteor methods or other.
+postDetailsDialog = baseDialog(Template.postDetailsDialog, simpleUpsert(Posts), options);
+
+// we can also wrap baseDialog() with our own function to customize the behavior further.
+//postDetailsDialog = myDialog(Template.postDetailsDialog, simpleUpsert(Posts), options);
+
+// here we hook the dialog show event so we can initialize the datetime picker since it is not reactive
 Template.postDetailsDialog.onRendered(function() {
-  //console.log('onRendered = ', this.timestamp);
+
+  var self = this;
+
+  // hook dialog show so we can manually update the date since it is not reactive
+  self.$('.modal').first().on('show.bs.modal', function () {
+    var data = postDetailsDialog.getData();
+    var defaultDate = data.timestamp || new Date();
+    self.$('.datetimepicker').datetimepicker({format : 'YYYY/MM/DD HH:mm:ss', defaultDate: defaultDate});
+  });
+
 });
 

@@ -8,6 +8,7 @@ Template.posts.helpers({
 Template.posts.events({
   'click #add' : function() {
     //console.log('add');
+
     postDetailsDialog.show({});
   }
 });
