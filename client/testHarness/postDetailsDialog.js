@@ -1,13 +1,15 @@
 
+console.log(Template.postDetailsDialog);
+
 // To setup our dialog, simply call dialogHelper with an object providing the needed data
 postDetailsDialog = dialogHelper({
-  // The name of the template
-  template: 'postDetailsDialog',
+  // the template containing the dialog
+  template: Template.postDetailsDialog,
 
   // Function that can be hooked to do the actual save (e.g. via meteor methods instead of collection).
   // Takes precedence over the collection property
   // Returns: true on success, false on failure
-  //save :function(data) { return true},
+  //save :function(template, data) { return true},
 
   // Validation function
   // Returns: true on successful validation, false on validation failure
@@ -32,22 +34,12 @@ postDetailsDialog = dialogHelper({
   // callback invoked before the dialog is shown so we can do custom initialization
   initialize : function(template, data) {
     //console.log('onShowing', templateInstance, data);
-    var defaultDate = Session.get('postDetailsDialog').timestamp;
-    template.$('.datetimepicker').datetimepicker({format : 'YYYY/MM/DD HH:mm:ss', defaultDate: defaultDate ? new Date(defaultDate) : new Date()});
+    var defaultDate = data.timestamp || new Date();
+    template.$('.datetimepicker').datetimepicker({format : 'YYYY/MM/DD HH:mm:ss', defaultDate: defaultDate});
   },
 
   // The collection to save to via insert() or update().  Ignored if a save function is provided
   collection: Posts,
-
-  // The selector to use to find the dialog (defaults to an id with the template name)
-  //dialogSelector : '#postDetailsDialog',
-
-  // The session key to use for this dialog (defaults to the template name)
-  //sessionKey : 'postDetailsDialog',
-
-  // The selector to hook for automatic saving (defaults to #save)
-  //saveSelector : '#save',
-
 
 });
 

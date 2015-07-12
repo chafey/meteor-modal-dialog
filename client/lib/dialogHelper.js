@@ -1,64 +1,52 @@
 
 dialogHelper = function(settings) {
 
-  // default the session key to the template name if not specified
-  if(!settings.sessionKey) {
-    settings.sessionKey = settings.template;
-  }
+  // create a unique sessionKey based on the template name and a randomly generated id
+  var sessionKey = settings.template.viewName + Random.id();
 
-  // default the dialogSelector to the template name as an id if not specified
-  if(!settings.dialogSelector) {
-    settings.dialogSelector = '#' + settings.template;
-  }
-
-  if(!settings.saveSelector) {
-    settings.saveSelector = '#save';
-  }
-
-  // the template instance for this dialog
-  var template;
+  // the template instance for this dialog - this is set the when the dialog is rendered
+  var templateInstance;
 
   // initialize the session to empty object so the template doesn't error out
-  Session.set(settings.sessionKey, {});
+  Session.set(sessionKey, {});
 
   // hook onRendered so we can initialize ourself
-  Template[settings.template].onRendered(function() {
-    template = this;
-
+  settings.template.onRendered(function() {
+    templateInstance = this;
     // on dialog shown, set the focus to the element with the autofocus attribute
-    template.$(settings.dialogSelector).on('shown.bs.modal', function () {
-      template.$('[autofocus]').focus()
+    this.$('.modal').first().on('shown.bs.modal', function () {
+      templateInstance.$('[autofocus]').focus()
     });
     // on dialog hide, set the session variable to undefined.  This will remove the dialog from the DOM.  This
     // is used to reset the input elements to default values for the "Add" case
-    template.$(settings.dialogSelector).on('hide.bs.modal', function () {
-      Session.set(settings.sessionKey, undefined);
+    this.$('.modal').first().on('hide.bs.modal', function () {
+      Session.set(sessionKey, undefined);
     });
     // on dialog hidden, set the session variable to an empty object.  This will add the dialog back to the DOM
     // with default values for input elements
     // NOTE: Resetting the default values depends on the dialog being removed from the DOM first so the old
     //       values are discarded.  This is done via the hide event handler above.  We are assuming that the
     //       dialog is removed between the hide and hidden events - hopefully this assumption holds up.
-    this.$(settings.dialogSelector).on('hidden.bs.modal', function () {
-      Session.set(settings.sessionKey, {});
+    this.$('.modal').first().on('hidden.bs.modal', function () {
+      Session.set(sessionKey, {});
     });
   });
 
   // Add helpers to access to dialog data
-  Template[settings.template].helpers({
+  settings.template.helpers({
     dialogData: function()  {
-      return Session.get(settings.sessionKey);
+      return Session.get(sessionKey);
     }
   });
 
   // Add support for saving the data if saveSelector is defined
-  if(settings.saveSelector) {
-    var events = {};
-    events['click ' + settings.saveSelector] = function (event, template) {
+  settings.template.events({
+
+    'click #save' : function (event, template) {
       //console.log('saving');
 
       // map data from the DOM into our data object based on the name attribute
-      var data = Session.get(settings.sessionKey);
+      var data = Session.get(sessionKey);
       map(template, data);
 
       // if a map function was supplied, call it so it can do custom data mapping
@@ -78,7 +66,7 @@ dialogHelper = function(settings) {
 
       // if a save function is defined, use that to save
       if(settings.save) {
-        if(settings.save(data) !== true) {
+        if(settings.save(template, data) !== true) {
           return;
         }
       } else {
@@ -95,28 +83,26 @@ dialogHelper = function(settings) {
       }
 
       // hide the dialog
-      $(settings.dialogSelector).modal('hide');
-    };
-    Template[settings.template].events(events);
-  }
+      $('.modal').first().modal('hide');
+    }
+  });
 
   return {
     show: function(data) {
-      data = data || {};
 
       // Set the session variable for this dialog
-      Session.set(settings.sessionKey, data);
+      Session.set(sessionKey, data);
 
       // invoke the initialize callback so it can do custom initialization of the template instance if necessary
       if(settings.initialize) {
-        settings.initialize(template, data);
+        settings.initialize(templateInstance, data);
       }
 
       // show dialog
-      $(settings.dialogSelector).modal();
+      templateInstance.$('.modal').first().modal();
     },
     hide: function() {
-      $(settings.dialogSelector).modal('hide')
+      templateInstance.$(settings.dialogSelector).modal('hide')
     }
   }
 };

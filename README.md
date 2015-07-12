@@ -1,7 +1,8 @@
 # meteor-modal-dialog
 
-This repository contains a prototype framework for dialog management in meteor and a sample test harness showing its
-use.  This will probably be broken out into a separate package once it matures.
+This repository contains a prototype mini framework for dialog management in meteor using bootstrap 3 and a test
+harness to help with development and illustrate its use.  This will probably be broken out into a separate
+package once it matures.
 
 Features
 ========
@@ -18,6 +19,15 @@ Features
 
 Backlog
 =======
+* revisit the data clearing mechanism - removing the dialog from the DOM seems hacky and may not be reliable.
+  Maybe inject the dialog into the DOM via Blaze.renderWithData()
+* make the clearing of the dialog data optional
+  NOTE: injecting the dialog each time via Blaze.renderWithData() would allow control over this
+* consider using the data property of the template instance rather than {{dialogData}
+  NOTE: this would impact the automated data clearing mechanism
+* consider replacing use of session with ReactiveVar
+* consider automatically showing dialogs that are currently shown during a hot code reload
+* consider moving the hooks into the template itself?
 
 * consider adding support for arrays and child objects (NOTE: possible now via customized data mapping hook)
 * add support for mapping to Number types (NOTE: possible now via customized data mapping hook)
@@ -26,9 +36,3 @@ Backlog
   (NOTE: possible now via customized validation logic hook)
 * create a generic mapping mechanism to integrate with third party packages (e.g. bootstrap datetime picker)
   (NOTE: possible now via customized data mapping hook and customized initialization hook)
-* make the clearing of the dialog data optional
-* consider using the data property of the template instance rather than {{dialogData}
-  NOTE: this would impact the automated data clearing mechanism
-* revisit the data clearing mechanism - removing the dialog from the DOM seems hacky and may not be reliable.
-* consider replacing use of session with ReactiveVar
-* consider automatically showing dialogs that are currently shown during a hot code reload
