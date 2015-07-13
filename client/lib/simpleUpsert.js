@@ -3,15 +3,16 @@
  * @param collection - The collection to upsert to
  * @returns {Function}
  */
-simpleUpsert = function(collection) {
-  return function(data) {
+Dialog.simpleUpsert = function(collection) {
+  return function(data, cb) {
     if (data._id) {
       var id = data._id;
       delete data._id;
       collection.update(id, {$set: data});
+      cb();
     } else {
       collection.insert(data);
+      cb();
     }
-    return true;
   }
 }

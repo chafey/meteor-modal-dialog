@@ -7,7 +7,7 @@
 
 // TODO: Make this extendable to support custom data mappers
 
-automap = function(templateInstance, data) {
+Dialog.automap = function(templateInstance, data) {
   // Pull data from DOM into our data object based on the name attribute
   templateInstance.$('input[type=text]').each(function (index, element) {
     var name = $(element).attr('name');

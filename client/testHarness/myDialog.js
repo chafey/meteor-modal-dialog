@@ -11,7 +11,7 @@
 
 myDialog = function(template, save, options) {
 
-  var dialog = baseDialog(template, save, options);
+  var dialog = Dialog.base(template, save, options);
 
   template.helpers({
     dialogMode: function () {

@@ -9,7 +9,7 @@
  * @returns {{show: Function, getData: Function, hide: Function}}
  */
 
-baseDialog = function(template, save, options) {
+Dialog.base = function(template, save, options) {
 
   var sessionDataKey = 'baseDialog.' + template.viewName;
   var sessionVisibleKey = sessionDataKey + '.visible';
@@ -33,7 +33,7 @@ baseDialog = function(template, save, options) {
     var self = this;
 
     // ensure focus is on the autofocus element in the dialog
-    autoFocus(self);
+    Dialog.autoFocus(self);
 
     // hide or show the dialog based on the sessionVisibleKey
     this.autorun(function() {
@@ -75,7 +75,7 @@ baseDialog = function(template, save, options) {
       var data = Session.get(sessionDataKey);
 
       // map from DOM elements into data
-      automap(templateInstance, data);
+      Dialog.automap(templateInstance, data);
 
       // if a map function was supplied, call it so it can do custom data mapping.  It is up to the
       // map function to tell the user what went wrong
@@ -96,13 +96,16 @@ baseDialog = function(template, save, options) {
       }
 
       // call the save function
-      if(save(data) === false) {
-        // TODO: how to handler failure here?
-        return;
-      }
-
-      // Hide the dialog on successful save
-      Session.set(sessionVisibleKey, false);
+      save(data, function(error) {
+        //console.log(error);
+        if(error) {
+          console.log('save returned error:' + error);
+          return;
+        }
+        // Hide the dialog on successful save
+        //console.log("save - hiding dialog");
+        Session.set(sessionVisibleKey, false);
+      });
     }
   });
 

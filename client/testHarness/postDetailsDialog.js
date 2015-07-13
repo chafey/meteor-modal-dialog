@@ -32,10 +32,10 @@ var options = {
 };
 
 
-// baseDialog requires the template and a function that is called to save the dialog contents.  Optional
+// base requires the template and a function that is called to save the dialog contents.  Optional
 // settings are passed via the optional third argument.  In this case, we use simpleUpset to upsert directly
 // to a collection - but we could pass another function which does the upsert via meteor methods or other.
-postDetailsDialog = baseDialog(Template.postDetailsDialog, simpleUpsert(Posts), options);
+postDetailsDialog = Dialog.base(Template.postDetailsDialog, Dialog.simpleUpsert(Posts), options);
 
 // we can also wrap baseDialog() with our own function to customize the behavior further.
 //postDetailsDialog = myDialog(Template.postDetailsDialog, simpleUpsert(Posts), options);
