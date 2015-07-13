@@ -9,7 +9,8 @@ var options = {
   // Date via an API call which the automapper doesn't know about
   map :function(template, data) {
     data.timestamp = template.$('.datetimepicker').data("DateTimePicker").date().toDate();
-    return true;
+    // return a string here if error
+    //return 'error mapping';
   },
 
   // We use a customized validation function to check to make sure the title is not empty
@@ -19,22 +20,24 @@ var options = {
       // focus the element and make it red
       template.$('#title').parent().addClass('has-error');
       template.$('#title').focus();
-      // return false to prevent saving of the data since validation failed
-      return false;
+      // Return an error string to display to the user
+      return 'Title must not be empty';
     } else {
       // data passed validation, remove the has-error class.
       // NOTE: it would be better to use reactivity to control validation errors
       template.$('#title').parent().removeClass('has-error');
     }
-
-    return true;
   }
 };
 
+function saveFail(data, cb) {
+  cb('saved failed');
+}
 
 // base requires the template and a function that is called to save the dialog contents.  Optional
 // settings are passed via the optional third argument.  In this case, we use simpleUpset to upsert directly
 // to a collection - but we could pass another function which does the upsert via meteor methods or other.
+//postDetailsDialog = Dialog.base(Template.postDetailsDialog, saveFail, options);
 postDetailsDialog = Dialog.base(Template.postDetailsDialog, Dialog.simpleUpsert(Posts), options);
 
 // we can also wrap baseDialog() with our own function to customize the behavior further.

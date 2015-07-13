@@ -13,6 +13,7 @@ Dialog.base = function(template, save, options) {
 
   var sessionDataKey = 'baseDialog.' + template.viewName;
   var sessionVisibleKey = sessionDataKey + '.visible';
+  var sessionErrorMessageKey = sessionDataKey + '.errorMessage';
 
   //console.log('sessionDataKey=' + sessionDataKey);
   if(!Session.get(sessionDataKey)) {
@@ -21,10 +22,16 @@ Dialog.base = function(template, save, options) {
   if(!Session.get(sessionVisibleKey)) {
     Session.set(sessionVisibleKey, false);
   }
+  if(!Session.get(sessionErrorMessageKey)) {
+    Session.set(sessionErrorMessageKey, '');
+  }
 
   template.helpers({
     dialogData: function() {
       return Session.get(sessionDataKey);
+    },
+    dialogErrorMessage: function() {
+      return Session.get(sessionErrorMessageKey);
     }
   });
 
@@ -41,6 +48,7 @@ Dialog.base = function(template, save, options) {
       if(Session.get(sessionVisibleKey) === true) {
         //console.log("showing dialog");
         self.$('.modal').first().modal('show');
+        Session.set(sessionErrorMessageKey, '');
       } else {
         //console.log("hiding dialog");
         self.$('.modal').first().modal('hide');
@@ -80,17 +88,19 @@ Dialog.base = function(template, save, options) {
       // if a map function was supplied, call it so it can do custom data mapping.  It is up to the
       // map function to tell the user what went wrong
       if(options.map) {
-        if(options.map(templateInstance, data) !== true) {
-          //console.log('custom data map failed');
-          return ;
+        var error = options.map(templateInstance, data);
+        if(error) {
+          Session.set(sessionErrorMessageKey, error);
+          return;
         }
       }
 
       // Invoke the validation function if it is defined.  It is up to the validation
       // routine to tell the user what went wrong
       if (options.validate) {
-        if (options.validate(templateInstance, data) !== true) {
-          //console.log('custom validation failed');
+        var error = options.validate(templateInstance, data);
+        if(error) {
+          Session.set(sessionErrorMessageKey, error);
           return;
         }
       }
@@ -100,6 +110,7 @@ Dialog.base = function(template, save, options) {
         //console.log(error);
         if(error) {
           console.log('save returned error:' + error);
+          Session.set(sessionErrorMessageKey, error);
           return;
         }
         // Hide the dialog on successful save
